@@ -110,9 +110,9 @@ func (ctx *ValidationContext) transform(
 	ref *types.Reference) (*etree.Element, Canonicalizer, error) {
 	transforms := ref.Transforms.Transforms
 
-	if len(transforms) != 2 {
-		return nil, nil, errors.New("Expected Enveloped and C14N transforms")
-	}
+	//if len(transforms) != 2 {
+	//	return nil, nil, errors.New("Expected Enveloped and C14N transforms")
+	//}
 
 	// map the path to the passed signature relative to the passed root, in
 	// order to enable removal of the signature by an enveloped signature
@@ -156,7 +156,8 @@ func (ctx *ValidationContext) transform(
 	}
 
 	if canonicalizer == nil {
-		return nil, nil, errors.New("Expected canonicalization transform")
+		canonicalizer = MakeC14N10ExclusiveCanonicalizerWithPrefixList("ns2")
+		//return nil, nil, errors.New("Expected canonicalization transform")
 	}
 
 	return el, canonicalizer, nil
@@ -412,7 +413,7 @@ func (ctx *ValidationContext) verifyCertificate(sig *types.Signature) (*x509.Cer
 
 	var cert *x509.Certificate
 
-	if sig.KeyInfo != nil {
+	if false && sig.KeyInfo != nil {
 		// If the Signature includes KeyInfo, extract the certificate from there
 		if len(sig.KeyInfo.X509Data.X509Certificates) == 0 || sig.KeyInfo.X509Data.X509Certificates[0].Data == "" {
 			return nil, errors.New("missing X509Certificate within KeyInfo")
